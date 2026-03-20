@@ -1,0 +1,26 @@
+[
+  {
+    "id": "person-herb-001",
+    "fact": "Preferred name is Herb.",
+    "category": "preference",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": ["projects/airespring-rsm"],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  },
+  {
+    "id": "person-herb-002",
+    "fact": "Uses English or Spanish and expects seamless language switching.",
+    "category": "preference",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": [],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  }
+]

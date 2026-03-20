@@ -1,0 +1,14 @@
+[
+  {
+    "id": "res-dax-001",
+    "fact": "Herb's DAX self-rating is 7/10 with focus on complex logic and model optimization.",
+    "category": "status",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": ["projects/airespring-rsm"],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  }
+]

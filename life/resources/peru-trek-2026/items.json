@@ -1,0 +1,14 @@
+[
+  {
+    "id": "res-peru-001",
+    "fact": "Peru trek is scheduled for Aug 5-15, 2026 with focus on altitude prep and family max-coverage logistics.",
+    "category": "milestone",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": ["areas/people/herbert-dubon"],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "company-rsm-001",
+    "fact": "RSM is part of Herb's ongoing analytics responsibility scope.",
+    "category": "relationship",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": ["projects/airespring-rsm", "areas/people/herbert-dubon"],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  }
+]

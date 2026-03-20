@@ -1,0 +1,26 @@
+[
+  {
+    "id": "proj-airespring-rsm-001",
+    "fact": "Herb is a Senior Data Analyst and 'Architect of Information'.",
+    "category": "status",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": ["areas/people/herbert-dubon", "areas/companies/airespring", "areas/companies/rsm"],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  },
+  {
+    "id": "proj-airespring-rsm-002",
+    "fact": "Recurring deliverables are automated Power BI dashboards, cross-departmental reconciliation, and ad-hoc SQL performance reports.",
+    "category": "context",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": ["resources/power-bi-dax"],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  }
+]

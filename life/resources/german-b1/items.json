@@ -1,0 +1,14 @@
+[
+  {
+    "id": "res-german-001",
+    "fact": "German level is A1/A2 with target B1 conversational fluency by August 2026.",
+    "category": "milestone",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": ["areas/people/herbert-dubon"],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  }
+]

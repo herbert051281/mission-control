@@ -3,6 +3,16 @@ import assert from 'node:assert/strict';
 import { SqliteAuditLog } from '../packages/audit/src/sqlite-audit-log.ts';
 import { startService } from '../apps/companion-service/src/server.ts';
 
+async function issueToken(port: number): Promise<string> {
+  const res = await fetch(`http://127.0.0.1:${port}/session/token`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: '{}',
+  });
+  const body = (await res.json()) as { token: string };
+  return body.token;
+}
+
 test('sqlite audit log inserts and retrieves events in order', () => {
   const audit = new SqliteAuditLog(':memory:');
   audit.init();
@@ -23,9 +33,11 @@ test('service writes queue and execution events to audit log', async () => {
 
   const { server, port } = await startService({ auditLog: audit });
   try {
+    const token = await issueToken(port);
+
     const create = await fetch(`http://127.0.0.1:${port}/tasks`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
       body: JSON.stringify({ action: 'read_status', riskLevel: 'low' }),
     });
     assert.equal(create.status, 201);
@@ -33,7 +45,7 @@ test('service writes queue and execution events to audit log', async () => {
 
     const started = await fetch(`http://127.0.0.1:${port}/tasks/${created.task.id}/start`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
       body: JSON.stringify({ durationMs: 10 }),
     });
     assert.equal(started.status, 202);

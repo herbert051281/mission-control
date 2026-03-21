@@ -3,14 +3,21 @@ import { TaskQueue } from './task-queue.ts';
 import { evaluatePolicy, type PolicyRule, type RiskLevel } from '../../../packages/policy-engine/src/index.ts';
 import samplePolicy from '../../../packages/policy-engine/policy.sample.json' with { type: 'json' };
 
+type AuditEvent = {
+  type: string;
+  payload: unknown;
+  timestamp: number;
+};
+
 type AuditLog = {
-  append: (event: { type: string; payload: unknown; timestamp?: number }) => unknown;
+  append: (event: AuditEvent) => unknown;
 };
 
 type StartOptions = {
   port?: number;
   host?: string;
   auditLog?: AuditLog;
+  authTtlMs?: number;
 };
 
 export type ServiceHandle = {
@@ -19,8 +26,11 @@ export type ServiceHandle = {
   port: number;
 };
 
+type ExecutionMode = 'safe' | 'controlled_ui';
+
 const LOCALHOST = '127.0.0.1' as const;
 const policy = samplePolicy as PolicyRule[];
+const DEFAULT_AUTH_TTL_MS = 30 * 60 * 1000;
 
 function sendJson(res: ServerResponse, status: number, body: unknown) {
   res.writeHead(status, { 'content-type': 'application/json' });
@@ -29,15 +39,30 @@ function sendJson(res: ServerResponse, status: number, body: unknown) {
 
 async function readBody(req: IncomingMessage): Promise<Record<string, unknown>> {
   const chunks: Uint8Array[] = [];
+  let size = 0;
+
   for await (const chunk of req) {
-    chunks.push(chunk as Uint8Array);
+    const data = chunk as Uint8Array;
+    size += data.byteLength;
+    if (size > 64 * 1024) {
+      throw new Error('payload_too_large');
+    }
+    chunks.push(data);
   }
 
   if (chunks.length === 0) {
     return {};
   }
 
-  return JSON.parse(Buffer.concat(chunks).toString('utf8')) as Record<string, unknown>;
+  try {
+    return JSON.parse(Buffer.concat(chunks).toString('utf8')) as Record<string, unknown>;
+  } catch {
+    throw new Error('invalid_json');
+  }
+}
+
+function isUiControlAction(action: string): boolean {
+  return action.startsWith('ui_') || action.startsWith('ahk_');
 }
 
 export async function startService(options: StartOptions = {}): Promise<ServiceHandle> {
@@ -49,11 +74,49 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
 
   const queue = new TaskQueue();
   const runningControllers = new Map<string, { controller: AbortController; timer: ReturnType<typeof setTimeout> }>();
-  let panicStopped = false;
+  const sessions = new Map<string, { expiresAt: number }>();
+  const events: AuditEvent[] = [];
+  const authTtlMs = options.authTtlMs ?? DEFAULT_AUTH_TTL_MS;
   const auditLog = options.auditLog;
 
+  let panicStopped = false;
+  let mode: ExecutionMode = 'safe';
+
   const logEvent = (type: string, payload: unknown) => {
-    auditLog?.append({ type, payload, timestamp: Date.now() });
+    const event: AuditEvent = { type, payload, timestamp: Date.now() };
+    events.push(event);
+    auditLog?.append(event);
+  };
+
+  const issueToken = () => {
+    const token = crypto.randomUUID();
+    const expiresAt = Date.now() + authTtlMs;
+    sessions.set(token, { expiresAt });
+    logEvent('session.issued', { expiresAt });
+    return { token, expiresAt, ttlMs: authTtlMs };
+  };
+
+  const requireAuth = (req: IncomingMessage, res: ServerResponse): boolean => {
+    const header = req.headers.authorization;
+    if (!header?.startsWith('Bearer ')) {
+      sendJson(res, 401, { error: 'missing_or_invalid_token' });
+      return false;
+    }
+
+    const token = header.slice('Bearer '.length).trim();
+    const session = sessions.get(token);
+    if (!session) {
+      sendJson(res, 401, { error: 'invalid_token' });
+      return false;
+    }
+
+    if (session.expiresAt <= Date.now()) {
+      sessions.delete(token);
+      sendJson(res, 401, { error: 'token_expired' });
+      return false;
+    }
+
+    return true;
   };
 
   const cancelTaskIfPossible = (taskId: string) => {
@@ -115,110 +178,205 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
   };
 
   const server = createServer(async (req, res) => {
-    if (req.method === 'GET' && req.url === '/health') {
-      sendJson(res, 200, { status: 'healthy' });
-      return;
+    try {
+      if (req.method === 'GET' && req.url === '/health') {
+        sendJson(res, 200, { status: 'healthy' });
+        return;
+      }
+
+      if (req.method === 'GET' && req.url === '/status') {
+        sendJson(res, 200, {
+          mode,
+          panicStopped,
+          queueCount: queue.all().filter((task) => task.state === 'queued').length,
+          pendingApprovalCount: queue.all().filter((task) => task.state === 'pending_approval').length,
+        });
+        return;
+      }
+
+      if (req.method === 'POST' && req.url === '/session/token') {
+        sendJson(res, 201, issueToken());
+        return;
+      }
+
+      if (req.method === 'GET' && req.url === '/tasks') {
+        sendJson(res, 200, { tasks: queue.all() });
+        return;
+      }
+
+      if (req.method === 'GET' && req.url === '/logs/export') {
+        const ordered = [...events].sort((a, b) => a.timestamp - b.timestamp);
+        sendJson(res, 200, {
+          generatedAt: Date.now(),
+          count: ordered.length,
+          events: ordered,
+        });
+        return;
+      }
+
+      if (req.method === 'POST' && req.url === '/mode') {
+        if (!requireAuth(req, res)) {
+          return;
+        }
+
+        const body = await readBody(req);
+        const requestedMode = body.mode;
+
+        if (requestedMode !== 'safe' && requestedMode !== 'controlled_ui') {
+          sendJson(res, 400, { error: 'invalid_mode' });
+          return;
+        }
+
+        mode = requestedMode;
+        logEvent('mode.changed', { mode });
+        sendJson(res, 200, { mode });
+        return;
+      }
+
+      if (req.method === 'POST' && req.url === '/tasks') {
+        if (!requireAuth(req, res)) {
+          return;
+        }
+
+        if (panicStopped) {
+          sendJson(res, 423, { error: 'panic_stopped' });
+          return;
+        }
+
+        const body = await readBody(req);
+        const action = String(body.action ?? '');
+        const riskLevel = body.riskLevel as RiskLevel;
+
+        if (!action) {
+          sendJson(res, 400, { error: 'action_required' });
+          return;
+        }
+
+        if (mode === 'safe' && isUiControlAction(action)) {
+          sendJson(res, 403, { error: 'safe_mode_blocks_ui_control' });
+          return;
+        }
+
+        const decision = evaluatePolicy(policy, { action, riskLevel });
+
+        if (decision.decision === 'deny') {
+          sendJson(res, 403, { decision: 'deny' });
+          return;
+        }
+
+        const task = queue.enqueue({ action, riskLevel });
+        logEvent('task.created', { taskId: task.id, action: task.action, riskLevel: task.riskLevel });
+
+        if (decision.decision === 'approval_required') {
+          const pending = queue.transition(task.id, 'pending_approval');
+          logEvent('task.pending_approval', { taskId: pending.id, action: pending.action });
+          sendJson(res, 202, { decision: 'approval_required', task: pending });
+          return;
+        }
+
+        sendJson(res, 201, { decision: 'allow', task });
+        return;
+      }
+
+      const approveMatch = req.url?.match(/^\/tasks\/([^/]+)\/approve$/);
+      if (req.method === 'POST' && approveMatch) {
+        if (!requireAuth(req, res)) {
+          return;
+        }
+
+        const task = queue.get(approveMatch[1]);
+        if (!task || task.state !== 'pending_approval') {
+          sendJson(res, 404, { error: 'pending_task_not_found' });
+          return;
+        }
+
+        const updated = queue.transition(task.id, 'queued');
+        logEvent('task.approved', { taskId: updated.id, action: updated.action });
+        sendJson(res, 200, { task: updated });
+        return;
+      }
+
+      const denyMatch = req.url?.match(/^\/tasks\/([^/]+)\/deny$/);
+      if (req.method === 'POST' && denyMatch) {
+        if (!requireAuth(req, res)) {
+          return;
+        }
+
+        const task = queue.get(denyMatch[1]);
+        if (!task || task.state !== 'pending_approval') {
+          sendJson(res, 404, { error: 'pending_task_not_found' });
+          return;
+        }
+
+        const updated = queue.transition(task.id, 'cancelled');
+        logEvent('task.denied', { taskId: updated.id, action: updated.action });
+        sendJson(res, 200, { task: updated });
+        return;
+      }
+
+      const startMatch = req.url?.match(/^\/tasks\/([^/]+)\/start$/);
+      if (req.method === 'POST' && startMatch) {
+        if (!requireAuth(req, res)) {
+          return;
+        }
+
+        if (panicStopped) {
+          sendJson(res, 423, { error: 'panic_stopped' });
+          return;
+        }
+
+        const body = await readBody(req);
+        const durationMs = typeof body.durationMs === 'number' ? body.durationMs : undefined;
+
+        try {
+          startSyntheticExecution(startMatch[1], durationMs);
+        } catch (error) {
+          sendJson(res, 400, { error: (error as Error).message });
+          return;
+        }
+
+        sendJson(res, 202, { task: queue.get(startMatch[1]) });
+        return;
+      }
+
+      if (req.method === 'POST' && req.url === '/panic-stop') {
+        if (!requireAuth(req, res)) {
+          return;
+        }
+
+        panicStop();
+        logEvent('panic.stop', { status: 'stopped' });
+        sendJson(res, 200, { status: 'stopped' });
+        return;
+      }
+
+      const taskMatch = req.url?.match(/^\/tasks\/([^/]+)$/);
+      if (req.method === 'GET' && taskMatch) {
+        const task = queue.get(taskMatch[1]);
+        if (!task) {
+          sendJson(res, 404, { error: 'task_not_found' });
+          return;
+        }
+
+        sendJson(res, 200, { task });
+        return;
+      }
+
+      sendJson(res, 404, { error: 'not_found' });
+    } catch (error) {
+      const message = (error as Error).message;
+      if (message === 'payload_too_large') {
+        sendJson(res, 413, { error: message });
+        return;
+      }
+
+      if (message === 'invalid_json') {
+        sendJson(res, 400, { error: message });
+        return;
+      }
+
+      sendJson(res, 500, { error: 'internal_error' });
     }
-
-    if (req.method === 'POST' && req.url === '/tasks') {
-      if (panicStopped) {
-        sendJson(res, 423, { error: 'panic_stopped' });
-        return;
-      }
-
-      const body = await readBody(req);
-      const action = body.action as string;
-      const riskLevel = body.riskLevel as RiskLevel;
-      const decision = evaluatePolicy(policy, { action, riskLevel });
-
-      if (decision.decision === 'deny') {
-        sendJson(res, 403, { decision: 'deny' });
-        return;
-      }
-
-      const task = queue.enqueue({ action, riskLevel });
-      logEvent('task.created', { taskId: task.id, action: task.action, riskLevel: task.riskLevel });
-
-      if (decision.decision === 'approval_required') {
-        const pending = queue.transition(task.id, 'pending_approval');
-        logEvent('task.pending_approval', { taskId: pending.id, action: pending.action });
-        sendJson(res, 202, { decision: 'approval_required', task: pending });
-        return;
-      }
-
-      sendJson(res, 201, { decision: 'allow', task });
-      return;
-    }
-
-    const approveMatch = req.url?.match(/^\/tasks\/([^/]+)\/approve$/);
-    if (req.method === 'POST' && approveMatch) {
-      const task = queue.get(approveMatch[1]);
-      if (!task || task.state !== 'pending_approval') {
-        sendJson(res, 404, { error: 'pending_task_not_found' });
-        return;
-      }
-
-      const updated = queue.transition(task.id, 'queued');
-      logEvent('task.approved', { taskId: updated.id, action: updated.action });
-      sendJson(res, 200, { task: updated });
-      return;
-    }
-
-    const denyMatch = req.url?.match(/^\/tasks\/([^/]+)\/deny$/);
-    if (req.method === 'POST' && denyMatch) {
-      const task = queue.get(denyMatch[1]);
-      if (!task || task.state !== 'pending_approval') {
-        sendJson(res, 404, { error: 'pending_task_not_found' });
-        return;
-      }
-
-      const updated = queue.transition(task.id, 'cancelled');
-      logEvent('task.denied', { taskId: updated.id, action: updated.action });
-      sendJson(res, 200, { task: updated });
-      return;
-    }
-
-    const startMatch = req.url?.match(/^\/tasks\/([^/]+)\/start$/);
-    if (req.method === 'POST' && startMatch) {
-      if (panicStopped) {
-        sendJson(res, 423, { error: 'panic_stopped' });
-        return;
-      }
-
-      const body = await readBody(req);
-      const durationMs = typeof body.durationMs === 'number' ? body.durationMs : undefined;
-
-      try {
-        startSyntheticExecution(startMatch[1], durationMs);
-      } catch (error) {
-        sendJson(res, 400, { error: (error as Error).message });
-        return;
-      }
-
-      sendJson(res, 202, { task: queue.get(startMatch[1]) });
-      return;
-    }
-
-    if (req.method === 'POST' && req.url === '/panic-stop') {
-      panicStop();
-      logEvent('panic.stop', { status: 'stopped' });
-      sendJson(res, 200, { status: 'stopped' });
-      return;
-    }
-
-    const taskMatch = req.url?.match(/^\/tasks\/([^/]+)$/);
-    if (req.method === 'GET' && taskMatch) {
-      const task = queue.get(taskMatch[1]);
-      if (!task) {
-        sendJson(res, 404, { error: 'task_not_found' });
-        return;
-      }
-
-      sendJson(res, 200, { task });
-      return;
-    }
-
-    sendJson(res, 404, { error: 'not_found' });
   });
 
   await new Promise<void>((resolve, reject) => {

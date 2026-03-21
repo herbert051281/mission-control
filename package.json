@@ -1,5 +1,18 @@
 {
+  "name": "skillmaster-companion",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --import tsx --test \"tests/**/*.test.ts\"",
+    "test:task1": "node --import tsx --test tests/task1-scaffold.test.ts",
+    "test:task2": "node --import tsx --test tests/task2-service-bootstrap.test.ts",
+    "test:task3": "node --import tsx --test tests/task3-queue-model.test.ts"
+  },
   "dependencies": {
     "pptxgenjs": "^4.0.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
   }
 }

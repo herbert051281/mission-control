@@ -3,9 +3,14 @@ import { TaskQueue } from './task-queue.ts';
 import { evaluatePolicy, type PolicyRule, type RiskLevel } from '../../../packages/policy-engine/src/index.ts';
 import samplePolicy from '../../../packages/policy-engine/policy.sample.json' with { type: 'json' };
 
+type AuditLog = {
+  append: (event: { type: string; payload: unknown; timestamp?: number }) => unknown;
+};
+
 type StartOptions = {
   port?: number;
   host?: string;
+  auditLog?: AuditLog;
 };
 
 export type ServiceHandle = {
@@ -45,6 +50,11 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
   const queue = new TaskQueue();
   const runningControllers = new Map<string, { controller: AbortController; timer: ReturnType<typeof setTimeout> }>();
   let panicStopped = false;
+  const auditLog = options.auditLog;
+
+  const logEvent = (type: string, payload: unknown) => {
+    auditLog?.append({ type, payload, timestamp: Date.now() });
+  };
 
   const cancelTaskIfPossible = (taskId: string) => {
     const task = queue.get(taskId);
@@ -53,7 +63,8 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
     }
 
     if (['queued', 'pending_approval', 'running'].includes(task.state)) {
-      queue.transition(task.id, 'cancelled');
+      const cancelled = queue.transition(task.id, 'cancelled');
+      logEvent('task.cancelled', { taskId: cancelled.id, action: cancelled.action });
     }
   };
 
@@ -67,7 +78,8 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
       throw new Error('task_not_queued');
     }
 
-    queue.transition(taskId, 'running');
+    const running = queue.transition(taskId, 'running');
+    logEvent('task.running', { taskId: running.id, action: running.action });
     const controller = new AbortController();
 
     const timer = setTimeout(() => {
@@ -75,7 +87,8 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
         return;
       }
 
-      queue.transition(taskId, 'done');
+      const done = queue.transition(taskId, 'done');
+      logEvent('task.done', { taskId: done.id, action: done.action });
       runningControllers.delete(taskId);
     }, durationMs);
 
@@ -124,9 +137,11 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
       }
 
       const task = queue.enqueue({ action, riskLevel });
+      logEvent('task.created', { taskId: task.id, action: task.action, riskLevel: task.riskLevel });
 
       if (decision.decision === 'approval_required') {
         const pending = queue.transition(task.id, 'pending_approval');
+        logEvent('task.pending_approval', { taskId: pending.id, action: pending.action });
         sendJson(res, 202, { decision: 'approval_required', task: pending });
         return;
       }
@@ -144,6 +159,7 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
       }
 
       const updated = queue.transition(task.id, 'queued');
+      logEvent('task.approved', { taskId: updated.id, action: updated.action });
       sendJson(res, 200, { task: updated });
       return;
     }
@@ -157,6 +173,7 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
       }
 
       const updated = queue.transition(task.id, 'cancelled');
+      logEvent('task.denied', { taskId: updated.id, action: updated.action });
       sendJson(res, 200, { task: updated });
       return;
     }
@@ -168,8 +185,11 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
         return;
       }
 
+      const body = await readBody(req);
+      const durationMs = typeof body.durationMs === 'number' ? body.durationMs : undefined;
+
       try {
-        startSyntheticExecution(startMatch[1]);
+        startSyntheticExecution(startMatch[1], durationMs);
       } catch (error) {
         sendJson(res, 400, { error: (error as Error).message });
         return;
@@ -181,6 +201,7 @@ export async function startService(options: StartOptions = {}): Promise<ServiceH
 
     if (req.method === 'POST' && req.url === '/panic-stop') {
       panicStop();
+      logEvent('panic.stop', { status: 'stopped' });
       sendJson(res, 200, { status: 'stopped' });
       return;
     }

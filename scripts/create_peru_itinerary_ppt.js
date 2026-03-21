@@ -56,13 +56,13 @@ s.addText(bullets.map(t => ({ text: t, options: { bullet: { indent: 18 } } })), 
 
 // 3. Flights
 s = pptx.addSlide();
-addHeader(s, 'Vuelos sugeridos (estimados)', 'Base asumida: salida internacional desde Kuala Lumpur (KUL)');
+addHeader(s, 'Vuelos sugeridos (estimados)', 'Base asumida: salida internacional desde San Salvador (SAL)');
 const flightRows = [
   ['Tramo', 'Horario sugerido', 'Duración aprox.', 'Precio estimado'],
-  ['KUL → LIM (5 ago)', '09:00 salida / 22:30 llegada', '28-34 h (1-2 escalas)', 'USD 1,350-1,900 adulto'],
+  ['SAL → LIM (5 ago)', '07:00 salida / 13:30 llegada', '8-12 h (1 escala)', 'USD 380-720 adulto'],
   ['LIM → CUZ (7 ago)', '10:00 / 11:25', '1h 25m', 'USD 90-170 adulto'],
   ['CUZ → LIM (14 ago)', '16:30 / 17:55', '1h 25m', 'USD 90-170 adulto'],
-  ['LIM → KUL (15 ago)', '11:30 salida', '27-34 h', 'USD 1,350-1,900 adulto']
+  ['LIM → SAL (15 ago)', '11:30 salida', '8-12 h (1 escala)', 'USD 380-720 adulto']
 ];
 s.addTable(flightRows, {
   x: 0.5, y: 1.45, w: 12.4, h: 3.6,
@@ -147,12 +147,12 @@ s = pptx.addSlide();
 addHeader(s, 'Presupuesto estimado (familia 2 adultos + 1 niña)');
 const budgetRows = [
   ['Rubro', 'Rango estimado'],
-  ['Vuelos internacionales (3 pax)', 'USD 3,300-4,900'],
+  ['Vuelos internacionales (3 pax)', 'USD 1,150-2,150'],
   ['Vuelos internos (3 pax total)', 'USD 450-850'],
   ['Alojamiento (10 noches)', 'USD 700-1,300'],
   ['Entradas y actividades', 'USD 250-500'],
   ['Comidas y transporte local', 'USD 700-1,200'],
-  ['Total estimado', 'USD 5,400-8,750']
+  ['Total estimado', 'USD 3,250-6,000']
 ];
 s.addTable(budgetRows, {
   x: 0.9, y: 1.6, w: 11.0, h: 3.7,
@@ -195,4 +195,4 @@ s.addText([
   x: 0.9, y: 1.6, w: 11.4, h: 4.7, fontSize: 20, color: colors.gray
 });
 
-pptx.writeFile({ fileName: '/data/.openclaw/workspace/Peru_Itinerario_5-15_Agosto_Familia.pptx' });
+pptx.writeFile({ fileName: '/data/.openclaw/workspace/Peru_Itinerario_5-15_Agosto_Familia_SAL.pptx' });

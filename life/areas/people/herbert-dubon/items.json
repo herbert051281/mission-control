@@ -22,5 +22,41 @@
     "relatedEntities": [],
     "lastAccessed": "2026-03-21",
     "accessCount": 1
+  },
+  {
+    "id": "person-herb-003",
+    "fact": "Telegram channel is connected; group policy currently drops group messages unless allowlist is configured.",
+    "category": "context",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "superseded",
+    "supersededBy": "person-herb-004",
+    "relatedEntities": [],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  },
+  {
+    "id": "person-herb-004",
+    "fact": "Telegram pairing and allowlist configuration completed for user ID 6353787838; direct messaging is active.",
+    "category": "status",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": [],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  },
+  {
+    "id": "person-herb-005",
+    "fact": "Claude Pro subscription configured as primary model with fallback chain: Claude Opus → Gemini Flash → GPT-5.4-mini.",
+    "category": "preference",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": [],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
   }
 ]

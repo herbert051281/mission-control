@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "skills": {
+    "github-cli": {
+      "version": "1.0.0",
+      "installedAt": 1774049957613
+    },
+    "openclaw-github-assistant": {
+      "version": "2.0.1",
+      "installedAt": 1774050001522
+    },
+    "remotion": {
+      "version": "1.0.1",
+      "installedAt": 1774050603706
+    },
+    "frontend-design-3": {
+      "version": "0.1.0",
+      "installedAt": 1774050841933
+    },
+    "slack": {
+      "version": "1.0.0",
+      "installedAt": 1774051155317
+    },
+    "google-calendar": {
+      "version": "0.1.0",
+      "installedAt": 1774051381784
+    },
+    "jira-openclaw": {
+      "version": "1.0.1",
+      "installedAt": 1774051441958
+    },
+    "secrets-management": {
+      "version": "1.0.0",
+      "installedAt": 1774051447574
+    },
+    "file-search": {
+      "version": "1.0.0",
+      "installedAt": 1774051502045
+    },
+    "snowflake": {
+      "version": "1.0.0",
+      "installedAt": 1774051561961
+    },
+    "playwright-skill": {
+      "version": "0.1.0",
+      "installedAt": 1774051801782
+    },
+    "superpowers": {
+      "version": "1.0.0",
+      "installedAt": 1774051876237
+    },
+    "asana": {
+      "version": "1.0.0",
+      "installedAt": 1774051921834
+    },
+    "system-design-solver": {
+      "version": "2.0.0",
+      "installedAt": 1774052163124
+    },
+    "typescript": {
+      "version": "1.0.2",
+      "installedAt": 1774052341294
+    },
+    "python": {
+      "version": "1.0.0",
+      "installedAt": 1774052403538
+    },
+    "code-review": {
+      "version": "1.0.0",
+      "installedAt": 1774052461423
+    },
+    "test-runner": {
+      "version": "1.0.0",
+      "installedAt": 1774052581726
+    },
+    "test-master": {
+      "version": "0.1.0",
+      "installedAt": 1774052641847
+    },
+    "design-system-patterns": {
+      "version": "1.0.0",
+      "installedAt": 1774054561592
+    },
+    "api-designer": {
+      "version": "0.1.0",
+      "installedAt": 1774053734987
+    },
+    "wcag-21-aa-web-ui-audit": {
+      "version": "1.0.0",
+      "installedAt": 1774053800099
+    },
+    "ux": {
+      "version": "1.0.0",
+      "installedAt": 1774053962992
+    },
+    "afrexai-prd-engine": {
+      "version": "1.0.0",
+      "installedAt": 1774054030525
+    },
+    "afrexai-sprint-planner": {
+      "version": "1.0.0",
+      "installedAt": 1774054094284
+    },
+    "api-design": {
+      "version": "1.0.0",
+      "installedAt": 1774054143396
+    },
+    "afrexai-technical-docs": {
+      "version": "1.1.0",
+      "installedAt": 1774054143748
+    },
+    "database-operations": {
+      "version": "1.0.0",
+      "installedAt": 1774054148964
+    },
+    "lb-motion-skill": {
+      "version": "0.1.0",
+      "installedAt": 1774054262089
+    },
+    "cicd-pipeline": {
+      "version": "1.0.0",
+      "installedAt": 1774054321629
+    },
+    "docker-essentials": {
+      "version": "1.0.0",
+      "installedAt": 1774054861828
+    },
+    "release-discipline": {
+      "version": "1.0.0",
+      "installedAt": 1774054865731
+    },
+    "api-security": {
+      "version": "1.0.0",
+      "installedAt": 1774055041138
+    },
+    "logging-observability": {
+      "version": "0.1.0",
+      "installedAt": 1774055102936
+    },
+    "powerpoint-pptx": {
+      "version": "1.0.1",
+      "installedAt": 1774058521619
+    },
+    "afrexai-presentation-mastery": {
+      "version": "1.0.0",
+      "installedAt": 1774058641716
+    },
+    "slides-cog": {
+      "version": "1.0.6",
+      "installedAt": 1774059601396
+    },
+    "pitch-deck-visuals": {
+      "version": "0.1.5",
+      "installedAt": 1774061401271
+    },
+    "afrexai-pitch-deck-reviewer": {
+      "version": "1.0.0",
+      "installedAt": 1774061521172
+    },
+    "generate-presentation": {
+      "version": "1.0.0",
+      "installedAt": 1774062002352
+    },
+    "self-improving-agent": {
+      "version": "3.0.5",
+      "installedAt": 1774068782273
+    }
+  }
+}

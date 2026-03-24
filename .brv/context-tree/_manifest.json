@@ -1,0 +1,127 @@
+{
+  "active_context": [
+    {
+      "order": 3,
+      "path": "_index.md",
+      "tokens": 775,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "architecture/_index.md",
+      "tokens": 959,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "assets/_index.md",
+      "tokens": 196,
+      "type": "summary"
+    },
+    {
+      "importance": 55,
+      "path": "architecture/skillmaster_companion/task_queue_model.md",
+      "tokens": 475,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/context.md",
+      "tokens": 54,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/skillmaster_companion/api_and_operations.md",
+      "tokens": 480,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/skillmaster_companion/companion_service.md",
+      "tokens": 179,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/skillmaster_companion/companion_service_api.md",
+      "tokens": 604,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/skillmaster_companion/context.md",
+      "tokens": 29,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/skillmaster_companion/desktop_api_and_preload.md",
+      "tokens": 271,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/skillmaster_companion/desktop_wrapper_and_packaging.md",
+      "tokens": 620,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/skillmaster_companion/monorepo_structure.md",
+      "tokens": 161,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/skillmaster_companion/panic_stop_mechanism.md",
+      "tokens": 429,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/skillmaster_companion/policy_engine.md",
+      "tokens": 382,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "assets/context.md",
+      "tokens": 45,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "assets/peru_travel/context.md",
+      "tokens": 25,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "assets/peru_travel/image_assets_and_sources.md",
+      "tokens": 153,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "scripts/context.md",
+      "tokens": 49,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "scripts/pptx_generation/context.md",
+      "tokens": 29,
+      "type": "context"
+    }
+  ],
+  "generated_at": "2026-03-21T03:57:35.404Z",
+  "lane_tokens": {
+    "contexts": 3985,
+    "stubs": 0,
+    "summaries": 1930
+  },
+  "source_fingerprint": "af4fcc2ba37e92670477ead4f2c8b77cbf75c79d32779693c2cd4e0c7fa351f6",
+  "total_tokens": 5915,
+  "version": 1
+}

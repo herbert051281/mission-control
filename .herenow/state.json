@@ -1,0 +1,22 @@
+{
+  "publishes": {
+    "sentient-pillar-ygnr": {
+      "siteUrl": "https://sentient-pillar-ygnr.here.now/",
+      "claimToken": "e6f036f275346734efd66304d76da32a9219900fe6d505506940bfa40cea9d47",
+      "claimUrl": "https://here.now/claim?slug=sentient-pillar-ygnr&token=e6f036f275346734efd66304d76da32a9219900fe6d505506940bfa40cea9d47",
+      "expiresAt": "2026-03-22T01:25:23.911Z"
+    },
+    "coral-hazel-rb9c": {
+      "siteUrl": "https://coral-hazel-rb9c.here.now/",
+      "claimToken": "800ed9b0e4751998da01919b02bcd5197d9eab2bd0fd51370ec396ccae837982",
+      "claimUrl": "https://here.now/claim?slug=coral-hazel-rb9c&token=800ed9b0e4751998da01919b02bcd5197d9eab2bd0fd51370ec396ccae837982",
+      "expiresAt": "2026-03-22T01:53:46.923Z"
+    },
+    "awake-solace-epk4": {
+      "siteUrl": "https://awake-solace-epk4.here.now/",
+      "claimToken": "98fac53af711525baff1ba63e34ffdbcedc3281491d7e1e03e6d238410a6a31a",
+      "claimUrl": "https://here.now/claim?slug=awake-solace-epk4&token=98fac53af711525baff1ba63e34ffdbcedc3281491d7e1e03e6d238410a6a31a",
+      "expiresAt": "2026-03-22T03:07:10.452Z"
+    }
+  }
+}

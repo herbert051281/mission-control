@@ -1,0 +1,22 @@
+{
+  "lastChecks": {
+    "memory_deadlines": null,
+    "priority_tasks": null,
+    "german_progress": null
+  },
+  "lastNotifications": {
+    "german_drill": null,
+    "peru_prep": null,
+    "powerbi_status": null,
+    "weekly_review": null
+  },
+  "activePhases": {
+    "peru_trek_prep": false,
+    "german_b1_push": false,
+    "powerbi_troubleshooting": false
+  },
+  "timestamps": {
+    "last_heartbeat": null,
+    "last_memory_scan": null
+  }
+}

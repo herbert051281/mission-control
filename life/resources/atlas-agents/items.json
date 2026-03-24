@@ -1,0 +1,50 @@
+[
+  {
+    "id": "res-atlas-agents-001",
+    "fact": "Atlas operates as orchestration commander with specialist agents: Newton (research), Iris (coding/automation), Davinci (front-end/UI-UX), Kepler (Senior Data Analyst), Einstein (Senior Data Scientist), Gandalf (Power BI/Tableau), Legolas (Project Manager/Agile).",
+    "category": "context",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": ["areas/people/herbert-dubon"],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  },
+  {
+    "id": "res-atlas-agents-002",
+    "fact": "Multi-agent governance enforces: single primary owner per task, dependency-first sequencing, handoff schema, and conflict-resolution priorities.",
+    "category": "context",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": [],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  },
+  {
+    "id": "res-atlas-agents-003",
+    "fact": "All specialist agents inherit global model defaults (Claude Pro primary with Opus/Gemini Flash/GPT-5.4-mini fallback chain).",
+    "category": "context",
+    "timestamp": "2026-03-21",
+    "source": "memory/2026-03-21.md",
+    "status": "superseded",
+    "supersededBy": "res-atlas-agents-004",
+    "relatedEntities": [],
+    "lastAccessed": "2026-03-21",
+    "accessCount": 1
+  },
+  {
+    "id": "res-atlas-agents-004",
+    "fact": "Model fallback chains configured (2026-03-23): Atlas=sonnet→haiku→gemini-3-flash→gpt-4o-mini; Kepler/Gandalf/Einstein/Iris=gpt-5.4→opus-4-5→sonnet-4-5→gemini-3-pro; Newton/Davinci=sonnet-4-5→haiku-4-5→gpt-4o-mini→gemini-3-pro; Legolas/Skillmaster=gpt-4o-mini→haiku-4-5→gemini-3-flash.",
+    "category": "context",
+    "timestamp": "2026-03-23",
+    "source": "memory/2026-03-23.md",
+    "status": "active",
+    "supersededBy": null,
+    "relatedEntities": [],
+    "lastAccessed": "2026-03-23",
+    "accessCount": 1
+  }
+]

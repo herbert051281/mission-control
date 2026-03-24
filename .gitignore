@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Compiled output
+backend/dist/
+frontend/dist/
+*.js
+*.js.map
+*.d.ts
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Build artifacts
+build/
+.cache/
+
+# Database
+*.db
+*.sqlite
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# OS
+Thumbs.db
+
+# Temp
+tmp/
+temp/
+*.tmp
+
+# Mission Control specific
+.postgres-data/
+MISSION_CONTROL_BUILD_STATUS.md.bak

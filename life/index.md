@@ -2,6 +2,7 @@
 
 ## Projects
 - [Airespring/RSM Analytics](projects/airespring-rsm/summary.md)
+- [Atlas Companion](projects/atlas-companion/summary.md)
 
 ## Areas
 ### People
@@ -16,6 +17,7 @@
 - [Bambu Lab A1](resources/bambu-lab-a1/summary.md)
 - [German B1 Plan](resources/german-b1/summary.md)
 - [Peru Trek 2026](resources/peru-trek-2026/summary.md)
+- [Atlas Multi-Agent Architecture](resources/atlas-agents/summary.md)
 
 ## Archives
 - (empty)

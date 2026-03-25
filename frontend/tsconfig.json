@@ -12,11 +12,13 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": false,
+    "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": true,
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src"],

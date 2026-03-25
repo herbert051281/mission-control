@@ -1,15 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store'
 import { apiClient } from '../api/client'
+import { SystemHealth } from '../types'
 
-interface HealthCheckResult {
-  status: 'healthy' | 'degraded' | 'unhealthy'
-  timestamp: Date
+interface HealthCheckResult extends Omit<SystemHealth, 'memoryUsage' | 'cpuUsage' | 'activeMissions' | 'errors'> {
   responseTime: number
-  activeAgents: number
   pendingMissions: number
   pendingApprovals: number
-  uptime: number
 }
 
 export function useHealthCheck(intervalMs: number = 30000) {

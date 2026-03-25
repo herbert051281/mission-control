@@ -3,8 +3,8 @@ import { useStore } from '../store'
 import { Mission, Agent, ActivityLog, Approval } from '../types'
 
 export function useRealtimeService() {
-  const store = useStore()
-  const { on, off, emit, connected } = useWebSocket()
+  const _store = useStore()
+  const { on, _off, emit, connected } = useWebSocket()
 
   // ==================== MISSION EVENTS ====================
   const onMissionCreated = (callback: (mission: Mission) => void) => {

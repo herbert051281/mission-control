@@ -21,9 +21,9 @@ router.post('/auth/login', async (req: Request, res: Response) => {
 
     // Generate token
     const token = generateToken(agentId, agentName);
-    res.json({ token, expiresIn: '24h' });
+    return res.json({ token, expiresIn: '24h' });
   } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
+    return res.status(500).json({ error: (error as Error).message });
   }
 });
 

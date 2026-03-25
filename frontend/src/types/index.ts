@@ -1,4 +1,18 @@
-export interface Mission { id: string; title: string; description: string; status: 'intake' | 'planning' | 'active' | 'completed' | 'archived'; priority: 'low' | 'medium' | 'high' | 'critical'; agentId: string; createdAt: string; updatedAt: string; dueDate?: string; tags: string[] }
+export type MissionStatus = 'intake' | 'routed' | 'in_progress' | 'review' | 'awaiting_approval' | 'completed'
+export type ApprovalStatus = 'pending' | 'approved' | 'denied'
+
+export interface Mission { 
+  id: string
+  title: string
+  description: string
+  status: MissionStatus
+  priority: 'low' | 'medium' | 'high' | 'critical'
+  category?: string
+  assigned_agents?: string[]
+  approval_required?: boolean
+  createdAt: string
+  updatedAt: string
+}
 export type AgentStatus = 'idle' | 'running' | 'waiting' | 'completed' | 'failed'
 
 export interface Task {

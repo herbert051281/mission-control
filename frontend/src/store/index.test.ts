@@ -131,6 +131,8 @@ describe('Zustand Store', () => {
       const agent: Agent = {
         id: 'agent1',
         name: 'Test Agent',
+        role: 'executor',
+        model: 'gpt-4',
         type: 'primary',
         status: 'idle',
         capabilities: ['task1', 'task2'],
@@ -146,6 +148,8 @@ describe('Zustand Store', () => {
       const agent: Agent = {
         id: 'agent1',
         name: 'Test Agent',
+        role: 'executor',
+        model: 'gpt-4',
         type: 'primary',
         status: 'idle',
         capabilities: [],
@@ -163,6 +167,8 @@ describe('Zustand Store', () => {
       const agent1: Agent = {
         id: 'agent1',
         name: 'Agent 1',
+        role: 'executor',
+        model: 'gpt-4',
         type: 'primary',
         status: 'idle',
         capabilities: [],
@@ -172,8 +178,10 @@ describe('Zustand Store', () => {
       const agent2: Agent = {
         id: 'agent2',
         name: 'Agent 2',
+        role: 'analyzer',
+        model: 'gpt-4',
         type: 'secondary',
-        status: 'busy',
+        status: 'running',
         capabilities: [],
         createdAt: '2026-03-25T00:00:00Z',
         updatedAt: '2026-03-25T00:00:00Z',

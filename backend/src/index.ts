@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import http from 'http';
 import dotenv from 'dotenv';
 import healthRouter from './routes/health';
+import authRouter from './routes/auth';
 import agentsRouter from './routes/agents';
 import activityRouter from './routes/activity';
 import missionsRouter from './routes/missions';
@@ -32,11 +33,14 @@ app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
-  next();
+  return next();
 });
 
 // Health check route (mounted at /api)
 app.use('/api', healthRouter);
+
+// Auth routes (mounted at /api)
+app.use('/api', authRouter);
 
 // Agents API routes (mounted at /api)
 app.use('/api', agentsRouter);

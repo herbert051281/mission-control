@@ -1,53 +1,25 @@
-# Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
-COPY tsconfig.json ./
+COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --only=production
 
-# Copy source
-COPY src ./src
+# Copy source code
+COPY . .
 
-# Compile TypeScript
+# Build TypeScript
 RUN npm run build
 
-# Stage 2: Runtime
-FROM node:18-alpine
-
-WORKDIR /app
-
-# Install dumb-init (handles signals properly)
-RUN apk add --no-cache dumb-init
-
-# Copy package files from builder
-COPY package*.json ./
-
-# Install production dependencies only
-RUN npm ci --omit=dev
-
-# Copy compiled code from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
-
-USER nodejs
+# Expose port
+EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+  CMD npm run health || exit 1
 
-# Use dumb-init to handle signals
-ENTRYPOINT ["dumb-init", "--"]
-
-# Start server
-CMD ["node", "dist/index.js"]
-
-EXPOSE 3000
+# Start application
+CMD ["npm", "start"]

@@ -1,42 +1,87 @@
 version: '3.8'
 
 services:
+  # PostgreSQL Database
   postgres:
-    image: postgres:15-alpine
-    container_name: mission-postgres
+    image: postgres:16-alpine
+    container_name: mission-control-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mission_control
+      POSTGRES_USER: ${DB_USER:-mission_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-mission_pass}
+      POSTGRES_DB: ${DB_NAME:-mission_control}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-mission_user}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - mission-control
 
+  # Backend API
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: mission-backend
+    container_name: mission-control-backend
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mission_control
+      NODE_ENV: production
       PORT: 3000
-      JWT_SECRET: dev-secret-key-change-in-production
-      NODE_ENV: development
-      FRONTEND_URL: http://localhost:5173
+      DATABASE_URL: postgresql://${DB_USER:-mission_user}:${DB_PASSWORD:-mission_pass}@postgres:5432/${DB_NAME:-mission_control}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
+      CORS_ORIGIN: http://localhost:5173,http://frontend:5173
     ports:
       - "3000:3000"
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - mission-control
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mission-control-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5173/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - mission-control
+
+  # Nginx Reverse Proxy (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: mission-control-proxy
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./backend/src:/app/src
-    command: npm run dev
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - mission-control
 
 volumes:
   postgres_data:
+
+networks:
+  mission-control:
+    driver: bridge

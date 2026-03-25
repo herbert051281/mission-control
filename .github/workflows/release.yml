@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: Release ${{ github.event.inputs.version }}
+          body: |
+            ## Changes
+            - See commit history for details
+            
+            ## Docker Images
+            - Backend: docker.io/${{ secrets.DOCKER_USERNAME }}/mission-control-backend:${{ github.event.inputs.version }}
+            - Frontend: docker.io/${{ secrets.DOCKER_USERNAME }}/mission-control-frontend:${{ github.event.inputs.version }}
+
+      - name: Publish to Docker Hub
+        run: |
+          docker tag mission-control-backend ${{ secrets.DOCKER_USERNAME }}/mission-control-backend:${{ github.event.inputs.version }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/mission-control-backend:${{ github.event.inputs.version }}

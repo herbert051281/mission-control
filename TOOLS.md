@@ -8,17 +8,34 @@ read_when:
 
 Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
 
-## API Keys & Services
+## What Goes Here
 
-### Tavily Search
-- **API Key:** `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`
-- **Use case:** Web research, real-time data lookups
-- **Status:** Active
+Things like:
 
-## Search Preferences
+- Camera names and locations
+- SSH hosts and aliases
+- Preferred voices for TTS
+- Speaker/room names
+- Device nicknames
+- Anything environment-specific
 
-- **Default search tool:** Tavily (when available), fallback to Brave Search
-- **Search depth:** Quick lookups use standard search; deep research uses Tavily's research mode
+## Examples
+
+```markdown
+### Cameras
+
+- living-room → Main area, 180° wide angle
+- front-door → Entrance, motion-triggered
+
+### SSH
+
+- home-server → 192.168.1.100, user: admin
+
+### TTS
+
+- Preferred voice: "Nova" (warm, slightly British)
+- Default speaker: Kitchen HomePod
+```
 
 ## Why Separate?
 

@@ -2,16 +2,15 @@
 
 A production-grade real-time web UI for orchestrating multiple AI agents (Atlas, Kepler, Einstein, Davinci, etc.) with mission management, approval workflows, activity logging, and live system monitoring.
 
-## 🎯 Project Status
+## Project Status
 
-**22 of 47 tasks complete (47%)**
-- ✅ Phase 1-2: Backend fully production-ready (30+ APIs, WebSocket, Docker)
-- ⏳ Phase 3: Frontend foundation (React, Zustand, API client)
-- 🔲 Phase 4-5: Integration & deployment (in queue)
+Backend is production-ready: 30+ REST endpoints, a 9-event WebSocket layer, JWT auth,
+Docker build and 150+ passing tests. The frontend foundation is in place — routing,
+Zustand state, API client with JWT interceptor — and the remaining work is screen-by-screen
+UI plus end-to-end deployment.
 
-**ETA:** 1.5-2 weeks from start to full deployment on Hostinger VPS
-
-See [MISSION_CONTROL_BUILD_STATUS.md](/data/.openclaw/workspace/MISSION_CONTROL_BUILD_STATUS.md) for detailed breakdown.
+Public because the architecture is worth reading, not because it is finished.
+Issues and questions welcome.
 
 ## 🛠️ Tech Stack
 
@@ -283,7 +282,7 @@ VITE_WS_URL=ws://localhost:3000
 
 If development paused for credit/time:
 
-1. **See detailed status:** [MISSION_CONTROL_BUILD_STATUS.md](/data/.openclaw/workspace/MISSION_CONTROL_BUILD_STATUS.md)
+1. **See detailed status:** `MISSION_CONTROL_BUILD_STATUS.md`
 2. **Next batch:** Phase 3 Tasks 3.6-3.15 (LeftNav, MissionBoard, AgentGrid, etc.)
 3. **Local test:** `docker-compose up -d && npm test`
 4. **Dispatch next batch:** Invoke subagent with task specifications from MISSION_CONTROL_BUILD_STATUS.md

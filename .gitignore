@@ -60,3 +60,11 @@ temp/
 # Mission Control specific
 .postgres-data/
 MISSION_CONTROL_BUILD_STATUS.md.bak
+
+# Personal / unrelated files
+Peru_Itinerario_*
+
+# Environment files (use .env.production.example as template)
+.env
+.env.production
+.env.local
